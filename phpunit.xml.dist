@@ -21,4 +21,12 @@
             <directory suffix=".php">./src</directory>
         </include>
     </source>
+    <php>
+        <!-- The tests need a MySQL or MariaDB database: override these variables in your environment or in a phpunit.xml file -->
+        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_DATABASE" value="search_replace_test"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value="password"/>
+    </php>
 </phpunit>

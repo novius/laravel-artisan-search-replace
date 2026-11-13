@@ -49,17 +49,46 @@ jobs:
       matrix:
         php: [8.2, 8.3, 8.4, 8.5]
         laravel: [12.*, 13.*]
-        stability: [prefer-lowest, prefer-stable]
+        database: ['mysql:8.4', 'mariadb:11.4']
+        stability: [prefer-stable]
         include:
           - laravel: 13.*
             testbench: 11.*
           - laravel: 12.*
             testbench: 10.*
+          # Lowest dependencies, on the oldest supported MySQL
+          - php: 8.2
+            laravel: 12.*
+            testbench: 10.*
+            database: 'mysql:8.0'
+            stability: prefer-lowest
+          - php: 8.3
+            laravel: 13.*
+            testbench: 11.*
+            database: 'mysql:8.0'
+            stability: prefer-lowest
         exclude:
           - laravel: 13.*
             php: 8.2
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.database }} - ${{ matrix.stability }}
+
+    services:
+      database:
+        image: ${{ matrix.database }}
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: search_replace_test
+          MARIADB_ROOT_PASSWORD: password
+          MARIADB_DATABASE: search_replace_test
+        ports:
+          - 3306:3306
+        # mysqladmin is not available in the MariaDB images, healthcheck.sh only in them
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -ppassword || healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
 
     steps:
       - name: Checkout code
@@ -69,7 +98,7 @@ jobs:
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, fileinfo, pdo, sqlite, pdo_sqlite, intl
+          extensions: dom, curl, libxml, mbstring, zip, fileinfo, pdo, pdo_mysql, intl
           ini-values: error_reporting=E_ALL
           tools: composer:v2
           coverage: none
@@ -79,5 +108,6 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
+      # The database connection is configured by phpunit.xml.dist (root / password on 127.0.0.1:3306)
       - name: Tests
         run: vendor/bin/pest --ci
