@@ -1,0 +1,29 @@
+# Composer
+/vendor
+composer.lock
+auth.json
+
+# Caches & builds
+/build
+/coverage
+.phpunit.cache
+.phpunit.result.cache
+
+# Local overrides of .dist files
+phpunit.xml
+phpstan.neon
+
+# DDEV
+/.ddev
+
+# IDE Stuff
+/.fleet
+/.idea
+/.vscode
+/nbproject
+_ide_helper.php
+.phpstorm.meta.php
+
+# OS crappy files
+.DS_Store
+Thumbs.db

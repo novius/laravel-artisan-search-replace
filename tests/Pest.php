@@ -1,0 +1,5 @@
+<?php
+
+use Novius\LaravelArtisanSearchReplace\Tests\TestCase;
+
+uses(TestCase::class)->in(__DIR__);

@@ -1,0 +1,81 @@
+{
+    "name": "novius/laravel-artisan-search-replace",
+    "description": "An Artisan command to search and replace a string in all text columns of a database",
+    "keywords": [
+        "laravel",
+        "artisan",
+        "database",
+        "search",
+        "replace"
+    ],
+    "homepage": "https://github.com/novius/laravel-artisan-search-replace",
+    "support": {
+        "issues": "https://github.com/novius/laravel-artisan-search-replace/issues",
+        "source": "https://github.com/novius/laravel-artisan-search-replace"
+    },
+    "license": "AGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Novius Agency",
+            "email": "team-developpeurs@novius.com",
+            "homepage": "https://www.novius.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/console": "^12.0 | ^13.0",
+        "illuminate/contracts": "^12.0 | ^13.0",
+        "illuminate/database": "^12.0 | ^13.0",
+        "illuminate/support": "^12.0 | ^13.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.29",
+        "orchestra/testbench": "^10.0 | ^11.0",
+        "pestphp/pest": "^3.0 | ^4.0 | ^5.0",
+        "pestphp/pest-plugin-arch": "^3.0 | ^4.0 | ^5.0",
+        "pestphp/pest-plugin-laravel": "^3.0 | ^4.0 | ^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Novius\\LaravelArtisanSearchReplace\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Novius\\LaravelArtisanSearchReplace\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Novius\\LaravelArtisanSearchReplace\\LaravelArtisanSearchReplaceServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@prepare"
+        ],
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "lint": [
+            "vendor/bin/pint --parallel"
+        ],
+        "lint:check": [
+            "vendor/bin/pint --parallel --test"
+        ],
+        "analyse": [
+            "vendor/bin/phpstan analyse --memory-limit 1G"
+        ],
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
