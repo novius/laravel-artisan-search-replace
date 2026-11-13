@@ -45,8 +45,13 @@ class SearchReplaceCommand extends Command
             return self::FAILURE;
         }
 
-        $search = (string) $this->argument('search');
-        $replace = (string) $this->argument('replace');
+        $search = $this->argument('search');
+        $replace = $this->argument('replace');
+        if (! is_string($search) || ! is_string($replace)) {
+            $this->components->error('The search and replace arguments must be strings.');
+
+            return self::FAILURE;
+        }
 
         if ($search === '') {
             $this->components->error('The search string cannot be empty.');
@@ -60,7 +65,8 @@ class SearchReplaceCommand extends Command
             return self::SUCCESS;
         }
 
-        $connection = $databaseManager->connection($this->option('database'));
+        $database = $this->option('database');
+        $connection = $databaseManager->connection(is_string($database) ? $database : null);
         try {
             $driver = $drivers->resolve($connection);
         } catch (UnsupportedDriverException $e) {
@@ -149,8 +155,7 @@ class SearchReplaceCommand extends Command
      */
     private function resolveTables(array $allTables): array
     {
-        /** @var list<string> $patterns */
-        $patterns = (array) $this->argument('tables');
+        $patterns = array_values(array_filter((array) $this->argument('tables'), is_string(...)));
         $explicit = [];
 
         if ($patterns === []) {

@@ -31,8 +31,15 @@ class SearchReplaceRevertCommand extends Command
             return self::FAILURE;
         }
 
+        $path = $this->argument('journal');
+        if (! is_string($path)) {
+            $this->components->error('The journal argument must be a string.');
+
+            return self::FAILURE;
+        }
+
         try {
-            $journal = new JournalReader((string) $this->argument('journal'));
+            $journal = new JournalReader($path);
         } catch (InvalidJournalException $e) {
             $this->components->error($e->getMessage());
 
